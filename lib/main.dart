@@ -33,6 +33,18 @@ class Intro extends StatelessWidget {
             child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            const SizedBox(
+              height: 150,
+            ),
+            const Text(
+              'Welcome to Tic Tac Toe',
+              style: TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+                color: Colors.blue,
+              ),
+            ),
+            const Spacer(),
             const Text(
               'Enter your name:',
               style: TextStyle(color: Colors.grey),
@@ -50,10 +62,10 @@ class Intro extends StatelessWidget {
               ),
             ),
             const SizedBox(
-              height: 20,
+              height: 40,
             ),
             SizedBox(
-              height: 50,
+              height: 65,
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
@@ -75,6 +87,7 @@ class Intro extends StatelessWidget {
                 ),
               ),
             ),
+            const Spacer(),
           ],
         )),
       ),

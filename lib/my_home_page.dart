@@ -1,8 +1,10 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 
 class MyHomePage extends StatefulWidget {
-  String title;
-  MyHomePage({super.key, required this.title});
+  final String playerTitle;
+  const MyHomePage({super.key, required this.playerTitle});
+
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
@@ -11,12 +13,33 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<Color> _colors = List.filled(9, Colors.white);
   bool _isPlayerOneTurn = true;
   String _winner = '';
+  final Random _random = Random();
 
   void _handleTap(int index) {
     if (_colors[index] == Colors.white && _winner == '') {
       setState(() {
-        _colors[index] = _isPlayerOneTurn ? Colors.blue : Colors.red;
-        _isPlayerOneTurn = !_isPlayerOneTurn;
+        _colors[index] = Colors.blue;
+        _isPlayerOneTurn = false;
+        _checkWinner();
+        if (_winner == '') {
+          _computerMove();
+        }
+      });
+    }
+  }
+
+  void _computerMove() {
+    List<int> availableMoves = [];
+    for (int i = 0; i < _colors.length; i++) {
+      if (_colors[i] == Colors.white) {
+        availableMoves.add(i);
+      }
+    }
+    if (availableMoves.isNotEmpty) {
+      int move = availableMoves[_random.nextInt(availableMoves.length)];
+      setState(() {
+        _colors[move] = Colors.red;
+        _isPlayerOneTurn = true;
         _checkWinner();
       });
     }
@@ -24,7 +47,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _checkWinner() {
     List<List<int>> winningCombinations = [
-      //--> these are the possible winning combinations
       [0, 1, 2],
       [3, 4, 5],
       [6, 7, 8],
@@ -34,14 +56,15 @@ class _MyHomePageState extends State<MyHomePage> {
       [0, 4, 8],
       [2, 4, 6],
     ];
-
     for (var combination in winningCombinations) {
       if (_colors[combination[0]] != Colors.white &&
           _colors[combination[0]] == _colors[combination[1]] &&
           _colors[combination[1]] == _colors[combination[2]]) {
-        _winner = _colors[combination[0]] == Colors.blue
-            ? 'Player One'
-            : 'Player Two';
+        setState(() {
+          _winner = _colors[combination[0]] == Colors.blue
+              ? widget.playerTitle
+              : 'Computer';
+        });
         break;
       }
     }
@@ -51,7 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: const Text('Tic Tac Toe'),
         centerTitle: true,
       ),
       body: Column(
@@ -59,7 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
         children: [
           Text(
             _winner.isEmpty
-                ? 'Turn: ${_isPlayerOneTurn ? 'Player One' : 'Player Two'}'
+                ? 'Turn: ${_isPlayerOneTurn ? widget.playerTitle : 'Computer'}'
                 : 'Winner: $_winner',
             style: const TextStyle(fontSize: 24),
           ),
