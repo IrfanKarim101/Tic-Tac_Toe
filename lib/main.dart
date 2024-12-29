@@ -41,6 +41,9 @@ class Intro extends StatelessWidget {
               },
               decoration: const InputDecoration(
                 hintText: 'Your Name',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                ),
               ),
             ),
             ElevatedButton(
