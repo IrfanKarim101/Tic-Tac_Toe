@@ -33,7 +33,10 @@ class Intro extends StatelessWidget {
             child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text('Enter your name:'),
+            const Text(
+              'Enter your name:',
+              style: TextStyle(color: Colors.grey),
+            ),
             TextField(
               controller: controller,
               onChanged: (value) {
@@ -46,14 +49,31 @@ class Intro extends StatelessWidget {
                 ),
               ),
             ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => MyHomePage(title: playerName)));
-              },
-              child: const Text('Start Game'),
+            const SizedBox(
+              height: 20,
+            ),
+            SizedBox(
+              height: 50,
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => MyHomePage(title: playerName)));
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  elevation: 6.0,
+                ),
+                child: const Text(
+                  'Start Game',
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
             ),
           ],
         )),
