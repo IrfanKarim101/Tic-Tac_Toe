@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 import 'package:flutter/material.dart';
 
@@ -65,16 +66,52 @@ class _MyHomePageState extends State<MyHomePage> {
               ? widget.playerTitle
               : 'Computer';
         });
+        _showResultDialog();
         break;
       }
     }
+  }
+
+  void _showResultDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Game Over'),
+          content: Text('Winner: $_winner'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _restartGame();
+              },
+              child: const Text('Restart'),
+            ),
+            TextButton(
+              onPressed: () {
+                exit(0);// Exit the app
+              },
+              child: const Text('Exit'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _restartGame() {
+    setState(() {
+      _colors.fillRange(0, _colors.length, Colors.white);
+      _isPlayerOneTurn = true;
+      _winner = '';
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tic Tac Toe'),
+        title: Text(widget.playerTitle),
         centerTitle: true,
       ),
       body: Column(

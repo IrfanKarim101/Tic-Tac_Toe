@@ -72,7 +72,8 @@ class Intro extends StatelessWidget {
                   Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => MyHomePage(title: playerName)));
+                          builder: (context) =>
+                              MyHomePage(playerTitle: playerName)));
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
