@@ -1,6 +1,7 @@
-import 'dart:io';
 import 'dart:math';
+import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'result.dart';
 
 class MyHomePage extends StatefulWidget {
   final String playerTitle;
@@ -66,36 +67,29 @@ class _MyHomePageState extends State<MyHomePage> {
               ? widget.playerTitle
               : 'Computer';
         });
-        _showResultDialog();
-        break;
+        showResult();
+        return;
       }
+    }
+    if (_colors.every((color) => color != Colors.white)) {
+      setState(() {
+        _winner = 'Tie';
+      });
+      showResult();
     }
   }
 
-  void _showResultDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Game Over'),
-          content: Text('Winner: $_winner'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                _restartGame();
-              },
-              child: const Text('Restart'),
-            ),
-            TextButton(
-              onPressed: () {
-                exit(0);// Exit the app
-              },
-              child: const Text('Exit'),
-            ),
-          ],
-        );
-      },
+  void showResult() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ResultPage(
+          winner: _winner == 'Tie' ? 'It\'s a Tie!' : 'Winner: $_winner',
+          onRestart: () {
+            Navigator.of(context).pop();
+            _restartGame();
+          },
+        ),
+      ),
     );
   }
 
@@ -111,35 +105,50 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
         title: Text(widget.playerTitle),
         centerTitle: true,
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            _winner.isEmpty
-                ? 'Turn: ${_isPlayerOneTurn ? widget.playerTitle : 'Computer'}'
-                : 'Winner: $_winner',
-            style: const TextStyle(fontSize: 24),
+      body: Stack(children: [
+        Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('lib/assets/bg1.jpg'),
+              fit: BoxFit.cover,
+            ),
           ),
-          GridView.builder(
-            shrinkWrap: true,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3),
-            itemCount: 9,
-            itemBuilder: (context, index) {
-              return GestureDetector(
-                onTap: () => _handleTap(index),
-                child: Container(
-                  margin: const EdgeInsets.all(4.0),
-                  color: _colors[index],
-                ),
-              );
-            },
-          ),
-        ],
-      ),
+        ),
+        BackdropFilter(
+            filter: ImageFilter.blur(
+                sigmaX: 90, sigmaY: 90, tileMode: TileMode.clamp),
+            child: Container()),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              _winner.isEmpty
+                  ? 'Turn: ${_isPlayerOneTurn ? widget.playerTitle : 'Computer'}'
+                  : 'Winner: $_winner',
+              style: const TextStyle(fontSize: 24),
+            ),
+            GridView.builder(
+              shrinkWrap: true,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3),
+              itemCount: 9,
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () => _handleTap(index),
+                  child: Container(
+                    margin: const EdgeInsets.all(4.0),
+                    color: _colors[index],
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ]),
     );
   }
 }
