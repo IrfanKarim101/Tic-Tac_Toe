@@ -17,20 +17,24 @@ class _MyHomePageState extends State<MyHomePage> {
   String _winner = '';
   final Random _random = Random();
 
-  void _handleTap(int index) {
+  void handleTap(int index) {
     if (_colors[index] == Colors.white && _winner == '') {
       setState(() {
         _colors[index] = Colors.blue;
         _isPlayerOneTurn = false;
         _checkWinner();
         if (_winner == '') {
-          _computerMove();
+          // time delay 0.5s for computer move
+          Future.delayed(
+            const Duration(milliseconds: 500),
+            () => computerMove(),
+          );
         }
       });
     }
   }
 
-  void _computerMove() {
+  void computerMove() {
     List<int> availableMoves = [];
     for (int i = 0; i < _colors.length; i++) {
       if (_colors[i] == Colors.white) {
@@ -86,14 +90,14 @@ class _MyHomePageState extends State<MyHomePage> {
           winner: _winner == 'Tie' ? 'It\'s a Tie!' : 'Winner: $_winner',
           onRestart: () {
             Navigator.of(context).pop();
-            _restartGame();
+            restartGame();
           },
         ),
       ),
     );
   }
 
-  void _restartGame() {
+  void restartGame() {
     setState(() {
       _colors.fillRange(0, _colors.length, Colors.white);
       _isPlayerOneTurn = true;
@@ -138,7 +142,7 @@ class _MyHomePageState extends State<MyHomePage> {
               itemCount: 9,
               itemBuilder: (context, index) {
                 return GestureDetector(
-                  onTap: () => _handleTap(index),
+                  onTap: () => handleTap(index),
                   child: Container(
                     margin: const EdgeInsets.all(4.0),
                     color: _colors[index],
